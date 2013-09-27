@@ -1,0 +1,12 @@
+{
+    "keys": [
+        {  "name": "CodeDate",
+            "bindKey": {
+                "win": "Ctrl-5",
+                "mac": "Command-5"}
+        },
+        {   "name": "CompletePlus",
+            "bindKey": "Ctrl-Space"
+        }
+    ]
+}
