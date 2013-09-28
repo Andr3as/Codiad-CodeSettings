@@ -10,8 +10,8 @@
         <table id="hotkey_list"></table>
     </div>
     <button onclick="codiad.modal.unload(); return false;">Close</button>
-    <button onclick="codiad.Hotkey.edit(); return false;">My key bindings</button>
+    <button onclick="codiad.CodeSettings.edit(); return false;">My key bindings</button>
     <script>
-        codiad.Hotkey.show();
+        codiad.CodeSettings.show();
     </script>
 </form>

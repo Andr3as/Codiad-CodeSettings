@@ -1,4 +1,4 @@
-#Hotkey
+#CodeSettings
 
 Create your own keybindings
 
@@ -9,4 +9,4 @@ Create your own keybindings
 
 ##Example
 
-![Example](http://andrano.de/Plugins/img/include.jpg "Example")
+![Example](http://andrano.de/Plugins/img/settings.jpg "Example")

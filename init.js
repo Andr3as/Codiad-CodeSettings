@@ -13,10 +13,10 @@
         curpath = path.split('/').slice(0, -1).join('/')+'/';
 
     $(function() {
-        codiad.Hotkey.init();
+        codiad.CodeSettings.init();
     });
     
-    codiad.Hotkey = {
+    codiad.CodeSettings = {
         
         path: curpath,
         file: "",
