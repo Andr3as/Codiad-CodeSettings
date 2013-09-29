@@ -1,11 +1,11 @@
 [{ "author" : "Andr3as",
     "version": "0.1",
-    "name" : "Hotkeys",
-    "url" : "https://github.com/Andr3as/Codiad-Hotkeys",
+    "name" : "CodeSettings",
+    "url" : "https://github.com/Andr3as/Codiad-CodeSettings",
     "exclude" : "",
     "rightbar" : [{
-        "action" : "codiad.Hotkey.showDialog();",
+        "action" : "codiad.CodeSettings.showDialog();",
         "icon" : "icon-keyboard",
-        "title" : "Hotkeys"
+        "title" : "CodeSettings"
         }]
 }]
