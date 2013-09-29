@@ -21,6 +21,7 @@
         path: curpath,
         file: "",
         open: false,
+        redo: false,
         keymap: null,
         
         init: function() {
@@ -41,6 +42,9 @@
                     }
                 });
                 _this.setKeys();
+                if (_this.open && path === _this.file && _this.redo) {
+                    _this.addCommands();
+                }
             });
             amplify.subscribe("active.onFocus", function(path){
                 if (_this.open) {
@@ -118,7 +122,12 @@
                 return false;
             }
             var manager = codiad.editor.getActive().commands;
-            manager.commands.Save.exec = this.$pSave;
+            try {
+                manager.commands.Save.exec = this.$pSave;
+                this.redo = false;
+            } catch (e) {
+                this.redo = true;
+            }
         },
         
         restoreCommands: function() {
@@ -126,7 +135,9 @@
                 return false;
             }
             var manager = codiad.editor.getActive().commands;
-            manager.commands.Save.exec = this.$cSave;
+            try {
+                manager.commands.Save.exec = this.$cSave;
+            } catch(e) {}
         },
         
         show: function() {
