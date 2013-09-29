@@ -111,6 +111,7 @@
                 var json = JSON.parse(data);
                 if (json.status !== "error") {
                     $('li[data-path="'+_this.file+'"]').removeClass('changed');
+                    _this.load();
                 } else {
                     codiad.message.error(json.message);
                 }
