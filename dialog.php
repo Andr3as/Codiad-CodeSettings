@@ -5,12 +5,20 @@
     This information must remain intact.
 -->
 <form id="hotkey">
-    <label>Current key bindings</label>
+    <label>CodeSettings</label>
     <div id="hotkey_div">
-        <table id="hotkey_list"></table>
+        <table id="hotkey_list">
+            <tr>
+                <td>Command name</td>
+                <td>Win keybinding</td>
+                <td>Mac keybinging</td>
+                <td></td>
+            </tr>
+        </table>
     </div>
-    <button onclick="codiad.modal.unload(); return false;">Close</button>
-    <button onclick="codiad.CodeSettings.edit(); return false;">My key bindings</button>
+    <button onclick="codiad.CodeSettings.save(); return false;">Save and Close</button>
+    <button onclick="codiad.CodeSettings.add(); return false;">Add new binding</button>
+    <button onclick="codiad.CodeSettings.edit(); return false;">Expert settings</button>
     <script>
         codiad.CodeSettings.show();
     </script>

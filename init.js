@@ -23,6 +23,7 @@
         open: false,
         redo: false,
         keymap: null,
+        template: "",
         
         init: function() {
             var _this = this;
@@ -30,6 +31,10 @@
             this.$cSave = codiad.active.save.bind(this);
             //Load keymap
             this.load();
+            //Load template
+            $.get(this.path+"template.html", function(html){
+                _this.template = html;
+            });
             //Set keymap
             amplify.subscribe("active.onOpen", function(path){
                 //Overwrite save commands
@@ -63,7 +68,7 @@
         },
         
         showDialog: function() {
-            codiad.modal.load(400, this.path+"dialog.php");
+            codiad.modal.load(600, this.path+"dialog.php");
         },
         
         load: function() {
@@ -142,6 +147,51 @@
         },
         
         show: function() {
+            var _this = this;
+            $.each(this.keymap, function(i, item){
+                _this.addEntry(item.name, item.bindKey.win, item.bindKey.mac);
+            });
+            $('#hotkey_div').css('max-height', function(){
+                return 0.6*window.innerHeight + "px";
+            });
+        },
+        
+        addEntry: function(name, win, mac) {
+            var coms = this.getCommands();
+            if (coms === false) {
+                return false;
+            }
+            var template = this.template;
+            var option = "";
+            for (var i = 0; i < coms.length; i++) {
+                if (coms[i].name == name) {
+                    option += "<option selected>"+coms[i].name+"</option>";
+                } else {
+                    option += "<option>"+coms[i].name+"</option>";
+                }
+            }
+            template = template.replace("__options__", option);
+            template = template.replace("__win__", win);
+            template = template.replace("__mac__", mac);
+            template = template.replace(new RegExp("__line__", "g"), $('#hotkey_list tr').length);
+            $('#hotkey_list').append(template);
+            this.setDelete();
+        },
+        
+        add: function() {
+            this.addEntry("","","");
+        },
+        
+        setDelete: function(){
+            $('.command_remove').click(function(){
+                var line = $(this).attr("data-line");
+                console.log(line);
+                $('.command_line[data-line="'+line+'"]').remove();
+                return false;
+            });
+        },
+        
+        getCommands: function() {
             if (codiad.editor.getActive() === null) {
                 codiad.message.error("Open file to display all commands!");
                 return false;
@@ -163,20 +213,7 @@
                     return 1;
                 }
             });
-            $.each(buf, function(i, item){
-                var element = "<tr><td>"+item.name+"</td><td>";
-                if ($.isPlainObject(item.bindKey)) {
-                    element += "Win: "+ item.bindKey.win;
-                    element += " Mac: "+ item.bindKey.mac;
-                } else {
-                    element += item.bindKey;
-                }
-                element += "</td></tr>";
-                $('#hotkey_list').append(element);
-            });
-            $('#hotkey_div').css('max-height', function(){
-                return 0.6*window.innerHeight + "px";
-            });
+            return buf;
         }
     };
 })(this, jQuery);
