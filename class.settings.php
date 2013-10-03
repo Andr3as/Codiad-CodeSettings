@@ -10,13 +10,14 @@
     class settings {
         
         public function load() {
-            return file_get_contents($this->getFilePath());
+            $this->existDir();
+            return json_encode(getJSON($this->getFileName(), "config"));
         }
         
         public function open() {
             $this->existDir();
             $msg            = array();
-            $msg['content'] = file_get_contents($this->getFilePath());
+            $msg['content'] = json_encode(getJSON($this->getFileName(), "config"));
             $msg['name']    = $this->getFileName();
             $msg['mtime']   = filemtime($this->getFilePath());
             if ($msg['content'] !== false) {
@@ -30,22 +31,18 @@
         
         public function save($content) {
             $this->existDir();
-            if (file_put_contents($this->getFilePath(), $content) !== false) {
-                return '{"status":"success","message":"Settings saved"}';
-            } else {
-                return '{"status":"error","message":"Failed to save settings!"}';
-            }
+            saveJSON($this->getFileName(), json_decode($content), "config");
+            return '{"status":"success","message":"Settings saved!"}';
         }
         
         public function existDir() {
             if(!file_exists($this->getFilePath())) {
-                @mkdir(DATA."/config");
-                file_put_contents($this->getFilePath(), json_encode(array()));
+                saveJSON($this->getFileName(), array(), "config");
             }
         }
         
         public function getFilePath() {
-            return DATA."/config/".get_called_class().".".$_SESSION['user'].".json";
+            return DATA."/config/".get_called_class().".".$_SESSION['user'].".php";
         }
         
         public function getFileName() {

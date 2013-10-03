@@ -22,12 +22,12 @@
         file: "",
         open: false,
         redo: false,
-        keymap: null,
+        settings: null,
         template: "",
         
         init: function() {
             var _this = this;
-            this.$pSave = this.save.bind(this);
+            this.$pSave = this.saveExpert.bind(this);
             this.$cSave = codiad.active.save.bind(this);
             //Load keymap
             this.load();
@@ -35,6 +35,7 @@
             $.get(this.path+"template.html", function(html){
                 _this.template = html;
             });
+            $.getScript(this.path+"beautify.js");
             //Set keymap
             amplify.subscribe("active.onOpen", function(path){
                 //Overwrite save commands
@@ -74,24 +75,29 @@
         load: function() {
             var _this = this;
             $.getJSON(this.path+"controller.php?action=load", function(json){
-                json.keys       = json.keys || {};
-                _this.keymap    = json.keys;
+                _this.settings    = json || {};
+                _this.settings.keys = json.keys || {};
             });
         },
         
         setKeys: function() {
-            if (codiad.editor.getActive() !== null) {
-                var manager = codiad.editor.getActive().commands;
-                //var command;
-                for (var i = 0; i < this.keymap.length; i++) {
-                    var element = this.keymap[i];
-                    manager.addCommand({
-                        name: element.name,
-                        bindKey: element.bindKey,
-                        exec: manager.byName[element.name].exec
-                    });
+            var _this = this;
+            setTimeout(function(){
+                if (codiad.editor.getActive() !== null) {
+                    var manager = codiad.editor.getActive().commands;
+                    //var command;
+                    for (var i = 0; i < _this.settings.keys.length; i++) {
+                        var element = _this.settings.keys[i];
+                        if (typeof(manager.byName[element.name]) != 'undefined') {
+                            manager.addCommand({
+                                name: element.name,
+                                bindKey: element.bindKey,
+                                exec: manager.byName[element.name].exec
+                            });
+                        }
+                    }
                 }
-            }
+            }, 0);
         },
         
         edit: function() {
@@ -99,8 +105,15 @@
             //Open file and load currrent settings
             $.getJSON(this.path+"controller.php?action=open", function(json){
                 if (json.status !== "error") {
-                    _this.file = json.name;
-                    _this.open = true;
+                    var opt = {
+                        "indent_size": codiad.editor.settings.tabSize,
+                        "indent_char": " ",
+                        "indent_with_tabs": !codiad.editor.settings.softTabs
+                    };
+                    _this.content   = json.content;
+                    json.content    = js_beautify(json.content, opt);
+                    _this.file      = json.name;
+                    _this.open      = true;
                     codiad.modal.unload();
                     codiad.active.open(json.name, json.content, json.mtime, false, true);
                 } else {
@@ -109,9 +122,40 @@
             });
         },
         
-        save: function() {
+        saveExpert: function() {
             var _this = this;
             var content = codiad.editor.getContent();
+            try {
+                this.settings = JSON.parse(content);
+            } catch (e) {
+                codiad.message.error("Error: "+e);
+                return false;
+            }
+            this.save();
+            return true;
+        },
+        
+        saveDialog: function() {
+            var buf = [];
+            var line;
+            $('.command_line').each(function(i, item){
+                var obj = {"name": "","bindKey": {"win": "","mac": ""}};
+                line = $(item).attr("data-line");
+                obj.name = $('.command_name[data-line="'+line+'"]').val();
+                obj.bindKey.win = $('.command_win[data-line="'+line+'"]').val();
+                obj.bindKey.mac = $('.command_mac[data-line="'+line+'"]').val();
+                buf.push(obj);
+                console.log(obj);
+            });
+            this.settings.keys = buf;
+            this.save();
+            codiad.modal.unload();
+        },
+        
+        save: function() {
+            var _this   = this;
+            var content = this.settings;
+            content     = JSON.stringify(content);
             $.post(this.path+"controller.php?action=save", {"content": content}, function(data){
                 var json = JSON.parse(data);
                 if (json.status !== "error") {
@@ -148,7 +192,7 @@
         
         show: function() {
             var _this = this;
-            $.each(this.keymap, function(i, item){
+            $.each(this.settings.keys, function(i, item){
                 _this.addEntry(item.name, item.bindKey.win, item.bindKey.mac);
             });
             $('#hotkey_div').css('max-height', function(){
@@ -185,7 +229,6 @@
         setDelete: function(){
             $('.command_remove').click(function(){
                 var line = $(this).attr("data-line");
-                console.log(line);
                 $('.command_line[data-line="'+line+'"]').remove();
                 return false;
             });
