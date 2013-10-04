@@ -18,7 +18,7 @@
             $this->existDir();
             $msg            = array();
             $msg['content'] = json_encode(getJSON($this->getFileName(), "config"));
-            $msg['name']    = $this->getFileName();
+            $msg['name']    = basename($this->getFileName(), ".php").".json";
             $msg['mtime']   = filemtime($this->getFilePath());
             if ($msg['content'] !== false) {
                 $msg['status'] = "success";
