@@ -97,7 +97,7 @@
                         }
                     }
                 }
-            }, 0);
+            }, 50);
         },
         
         edit: function() {
@@ -145,7 +145,6 @@
                 obj.bindKey.win = $('.command_win[data-line="'+line+'"]').val();
                 obj.bindKey.mac = $('.command_mac[data-line="'+line+'"]').val();
                 buf.push(obj);
-                console.log(obj);
             });
             this.settings.keys = buf;
             this.save();
@@ -161,6 +160,8 @@
                 if (json.status !== "error") {
                     $('li[data-path="'+_this.file+'"]').removeClass('changed');
                     _this.load();
+                    _this.setKeys();
+                    codiad.message.success(json.message);
                 } else {
                     codiad.message.error(json.message);
                 }
