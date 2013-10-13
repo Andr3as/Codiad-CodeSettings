@@ -24,6 +24,7 @@
         redo: false,
         settings: null,
         template: "",
+        commands: null,
         
         init: function() {
             var _this = this;
@@ -50,6 +51,9 @@
                 _this.setKeys();
                 if (_this.open && path === _this.file && _this.redo) {
                     _this.addCommands();
+                }
+                if (codiad.editor.getActive() !== null) {
+                    _this.commands = codiad.editor.getActive().commands.byName;
                 }
             });
             amplify.subscribe("active.onFocus", function(path){
@@ -236,11 +240,18 @@
         },
         
         getCommands: function() {
+            var commands;
             if (codiad.editor.getActive() === null) {
-                codiad.message.error("Open file to display all commands!");
-                return false;
+                if (this.commands === null) {
+                    codiad.message.error("Open file to display all commands!");
+                    return false;    
+                } else {
+                    commands = this.commands;
+                }
+            } else {
+                commands = codiad.editor.getActive().commands.byName;
             }
-            var commands = codiad.editor.getActive().commands.byName;
+            
             var buf = [];
             $.each(commands, function(i, item){
                 buf.push(item);
