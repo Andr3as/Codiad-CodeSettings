@@ -37,6 +37,10 @@
                 _this.template = html;
             });
             $.getScript(this.path+"beautify.js");
+            //Load default commands
+            $.getJSON(this.path+"default.commands.json", function(json){
+                _this.commands = json;
+            });
             //Set keymap
             amplify.subscribe("active.onOpen", function(path){
                 //Overwrite save commands
@@ -55,6 +59,15 @@
                 if (codiad.editor.getActive() !== null) {
                     _this.commands = codiad.editor.getActive().commands.byName;
                 }
+                //Save current existing commands
+                setTimeout(function(){
+                    $.post(_this.path+"controller.php?action=saveCommands", {commands: JSON.stringify(_this.commands)}, function(data){
+                        var json = JSON.parse(data);
+                        if (json.status == "error") {
+                            codiad.message.error(json.message);
+                        }
+                    });
+                }, 10);
             });
             amplify.subscribe("active.onFocus", function(path){
                 if (_this.open) {
