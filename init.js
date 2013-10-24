@@ -25,6 +25,7 @@
         settings: null,
         template: "",
         commands: null,
+        entries: 0,
         
         init: function() {
             var _this = this;
@@ -235,7 +236,7 @@
             template = template.replace("__options__", option);
             template = template.replace("__win__", win);
             template = template.replace("__mac__", mac);
-            template = template.replace(new RegExp("__line__", "g"), $('#hotkey_list tr').length);
+            template = template.replace(new RegExp("__line__", "g"), this.entries++);
             $('#hotkey_list').append(template);
             this.setDelete();
         },
