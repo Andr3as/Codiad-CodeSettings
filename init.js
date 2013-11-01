@@ -84,12 +84,43 @@
                     _this.open = false;
                 }
             });
+            //Live feature
+            $('.command_name').live("change", function(){
+                var line = $(this).attr('data-line');
+                var name = $(this).val();
+                var com  = _this.commands[name].bindKey;
+                if (typeof(com.win) != 'undefined') {
+                    $('.command_win[data-line="'+line+'"]').val(com.win);
+                } else {
+                    if (!$.isPlainObject(com) && !$.isArray(com)) {
+                        $('.command_win[data-line="'+line+'"]').val(com);
+                    }
+                }
+                if (typeof(com.win) != 'undefined') {
+                    $('.command_mac[data-line="'+line+'"]').val(com.mac);
+                } else {
+                    if (!$.isPlainObject(com) && !$.isArray(com)) {
+                        $('.command_mac[data-line="'+line+'"]').val(com);
+                    }
+                }
+                
+            });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Show dialog
+        //
+        //////////////////////////////////////////////////////////
         showDialog: function() {
             codiad.modal.load(600, this.path+"dialog.php");
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Load current settings
+        //
+        //////////////////////////////////////////////////////////
         load: function() {
             var _this = this;
             $.getJSON(this.path+"controller.php?action=load", function(json){
@@ -98,6 +129,11 @@
             });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Set keybindings of settings
+        //
+        //////////////////////////////////////////////////////////
         setKeys: function() {
             var _this = this;
             setTimeout(function(){
@@ -118,6 +154,11 @@
             }, 50);
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Open file for expert settings
+        //
+        //////////////////////////////////////////////////////////
         edit: function() {
             var _this = this;
             //Open file and load currrent settings
@@ -140,6 +181,11 @@
             });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Save expert settings
+        //
+        //////////////////////////////////////////////////////////
         saveExpert: function() {
             var _this = this;
             var content = codiad.editor.getContent();
@@ -153,6 +199,11 @@
             return true;
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Save dialog settings
+        //
+        //////////////////////////////////////////////////////////
         saveDialog: function() {
             var buf = [];
             var line;
@@ -169,6 +220,11 @@
             codiad.modal.unload();
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Save current user settings
+        //
+        //////////////////////////////////////////////////////////
         save: function() {
             var _this   = this;
             var content = this.settings;
@@ -186,6 +242,11 @@
             });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Change save command for expert settings
+        //
+        //////////////////////////////////////////////////////////
         addCommands: function() {
             if (codiad.editor.getActive() === null) {
                 return false;
@@ -199,6 +260,11 @@
             }
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Restore save command after expert settings
+        //
+        //////////////////////////////////////////////////////////
         restoreCommands: function() {
             if (codiad.editor.getActive() === null) {
                 return false;
@@ -209,6 +275,11 @@
             } catch(e) {}
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Display commands in dialog
+        //
+        //////////////////////////////////////////////////////////
         show: function() {
             var _this = this;
             $.each(this.settings.keys, function(i, item){
@@ -219,6 +290,17 @@
             });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Add new command
+        //
+        //  Parameter
+        //
+        //  name - {String} - Name of command
+        //  win - {String} - Command for win
+        //  mac - {String} - Command for mac
+        //
+        //////////////////////////////////////////////////////////
         addEntry: function(name, win, mac) {
             var coms = this.getCommands();
             if (coms === false) {
@@ -241,10 +323,20 @@
             this.setDelete();
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Add new empty command
+        //
+        //////////////////////////////////////////////////////////
         add: function() {
             this.addEntry("","","");
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Activate delete button
+        //
+        //////////////////////////////////////////////////////////
         setDelete: function(){
             $('.command_remove').click(function(){
                 var line = $(this).attr("data-line");
@@ -253,6 +345,11 @@
             });
         },
         
+        //////////////////////////////////////////////////////////
+        //
+        //  Get current commands or a fallback
+        //
+        //////////////////////////////////////////////////////////
         getCommands: function() {
             var commands;
             if (codiad.editor.getActive() === null) {
@@ -283,6 +380,15 @@
                 }
             });
             return buf;
+        },
+        
+        //////////////////////////////////////////////////////////
+        //
+        //  Display help command
+        //
+        //////////////////////////////////////////////////////////
+        help: function() {
+            codiad.modal.load(400, this.path+"dialog.php?action=help");
         }
     };
 })(this, jQuery);
