@@ -105,6 +105,13 @@
                 }
                 
             });
+            $('.command_win').live("change", function(){
+                _this.onCommandChange(this);
+                console.log("onChange");
+            });
+            $('.command_mac').live("change", function(){
+                _this.onCommandChange(this);
+            });
         },
         
         //////////////////////////////////////////////////////////
@@ -389,6 +396,41 @@
         //////////////////////////////////////////////////////////
         help: function() {
             codiad.modal.load(400, this.path+"dialog.php?action=help");
+        },
+        
+        //////////////////////////////////////////////////////////
+        //
+        //  Check if command is already used
+        //
+        //  Parameter
+        //
+        //  field - {jQuery objcet} - Field to check
+        //
+        //////////////////////////////////////////////////////////
+        onCommandChange: function(field) {
+            var type = 'win';
+            if ($(field).hasClass('.command_mac')) {
+                type = 'mac';
+            }
+            var value = $(field).val();
+            if (this.commands === null) {
+                return false;
+            }
+            var com;
+            $.each(this.commands, function(i, item){
+                if (typeof(item.bindKey) == 'undefined') {
+					return;
+                }
+                if (typeof(item.bindKey[type]) == 'undefined') {
+                    com = item.bindKey;
+                } else {
+                    com = item.bindKey[type];
+                }
+                if (value === com) {
+                    codiad.message.notice("Command already used!");
+                    return false;
+                }
+            });
         }
     };
 })(this, jQuery);
