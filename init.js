@@ -107,7 +107,6 @@
             });
             $('.command_win').live("change", function(){
                 _this.onCommandChange(this);
-                console.log("onChange");
             });
             $('.command_mac').live("change", function(){
                 _this.onCommandChange(this);
