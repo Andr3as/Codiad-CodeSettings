@@ -8,4 +8,5 @@ Create your own keybindings
 
 ##Example
 
+![Example](http://andrano.de/Plugins/img/settings_dialog.jpg "Example")
 ![Example](http://andrano.de/Plugins/img/settings.jpg "Example")
