@@ -222,7 +222,7 @@
                 buf.push(obj);
             });
             if ($.isArray(this.settings)) {
-				this.settings = {};
+                this.settings = {};
             }
             this.settings.keys = buf;
             this.save();
@@ -237,8 +237,6 @@
         save: function() {
             var _this   = this;
             var content = this.settings;
-			console.log(this.settings);
-			console.log(JSON.stringify(this.settings));
             content     = JSON.stringify(content);
             $.post(this.path+"controller.php?action=save", {"content": content}, function(data){
                 var json = JSON.parse(data);
