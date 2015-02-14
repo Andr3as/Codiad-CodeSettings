@@ -84,6 +84,12 @@
                     _this.open = false;
                 }
             });
+            
+            amplify.subscribe('settings.dialog.save', function(){
+                if ($('#hotkey_div').length > 0) {
+                    _this.saveDialog();
+                }
+            });
             //Live feature
             $('.command_name').live("change", function(){
                 var line = $(this).attr('data-line');
@@ -226,7 +232,6 @@
             }
             this.settings.keys = buf;
             this.save();
-            codiad.modal.unload();
         },
         
         //////////////////////////////////////////////////////////

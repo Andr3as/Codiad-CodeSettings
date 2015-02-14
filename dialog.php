@@ -26,7 +26,6 @@
                             </tr>
                         </table>
                     </div>
-                    <button onclick="codiad.CodeSettings.saveDialog(); return false;">Save and Close</button>
                     <button onclick="codiad.CodeSettings.add(); return false;">Add new binding</button>
                     <button onclick="codiad.CodeSettings.edit(); return false;">Expert settings</button>
                     <button onclick="codiad.CodeSettings.help(); return false;">Help</button>
