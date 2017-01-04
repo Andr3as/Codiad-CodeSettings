@@ -125,7 +125,7 @@
         //
         //////////////////////////////////////////////////////////
         showDialog: function() {
-            codiad.modal.load(600, this.path+"dialog.php");
+            codiad.settings.show('plugins/Codiad-CodeSettings-master/dialog.php');
         },
         
         //////////////////////////////////////////////////////////
